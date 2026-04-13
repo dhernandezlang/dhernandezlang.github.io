@@ -78,7 +78,7 @@
     /* The astronomical background image */
     .astro-bg {
       position: absolute; inset: 0;
-      background-image: url('astro-bg.jpg');
+      background-image: url('astro-bg-fixed.jpg');
       background-size: cover;
       background-position: center;
       filter: brightness(0.55) saturate(1.2);
@@ -386,9 +386,9 @@
 <div id="page-home" class="page active">
 
   <div class="astro-hero">
-    <!-- Replace images/astro-bg.jpg with your own astronomical image -->
+    <!-- Replace images/astro-bg-fixed.jpg with your own astronomical image -->
     <div class="astro-bg"></div>
-    <!-- Fallback animated starfield (shows when no astro-bg.jpg) -->
+    <!-- Fallback animated starfield (shows when no astro-bg-fixed.jpg) -->
     <canvas id="starfield"></canvas>
 
     <div class="astro-overlay-top"></div>
@@ -785,7 +785,7 @@
     const bg = document.querySelector('.astro-bg');
     const testImg = new Image();
     testImg.onload = () => { canvas.style.display = 'none'; };
-    testImg.src = 'astro-bg.jpg';
+    testImg.src = 'astro-bg-fixed.jpg';
   })();
 
   /* ── Lightbox ── */
