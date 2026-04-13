@@ -78,7 +78,7 @@
     /* The astronomical background image */
     .astro-bg {
       position: absolute; inset: 0;
-      background-image: url('Euclid_Deep_Field_South_70x_zoom.jpg');
+      background-image: url('astro-bg.jpg');
       background-size: cover;
       background-position: center;
       filter: brightness(0.55) saturate(1.2);
@@ -785,7 +785,7 @@
     const bg = document.querySelector('.astro-bg');
     const testImg = new Image();
     testImg.onload = () => { canvas.style.display = 'none'; };
-    testImg.src = 'images/astro-bg.jpg';
+    testImg.src = 'astro-bg.jpg';
   })();
 
   /* ── Lightbox ── */
