@@ -130,7 +130,7 @@
       align-items: center; justify-content: center;
       gap: 12px;
     }
-    .photo-placeholder span {
+    .photo- span {
       font-family: var(--font-display);
       font-size: 64px; font-weight: 300; color: rgba(200,169,122,0.4);
     }
@@ -332,7 +332,11 @@
       font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
       color: var(--muted); padding: 3rem 1rem; text-align: center;
     }
-
+    <div class="art-item" onclick="openLightbox('images/painting1.jpg')">
+      <img src="art1.jpg" alt="Title" loading="lazy">
+      <div class="art-caption">Title, Year</div>
+    </div>
+    
     /* ─── LIGHTBOX ─── */
     .lightbox {
       display: none; position: fixed; inset: 0; z-index: 500;
