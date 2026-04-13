@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>D. E. Hernández Lang</title>
+  <title>D. E. Hernández Lang, Ph.D.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -255,7 +255,25 @@
       transition: opacity 0.2s;
     }
     .project-link:hover { opacity: 0.7; }
-
+    .project-plots {
+      display: flex;
+      gap: 12px;
+      margin-top: 1.25rem;
+    }
+    .project-plots img {
+      height: 180px;
+      width: auto;
+      max-width: 48%;
+      object-fit: contain;
+      border: 0.5px solid var(--border);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      background: var(--off-white);
+    }
+    .project-plots img:hover {
+      border-color: var(--accent);
+    }
     /* ─── RESUME ─── */
     .resume-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
@@ -391,17 +409,17 @@
           <!-- ── SLIDE 1 ──
                Replace with: <img src="images/photo1.jpg" alt="Your name"> -->
           <div class="carousel-slide active">
-            <img src="carousel2.jpg" alt="Dan Fernández-Lan">
+            <img src="carousel2.jpg" alt="Daniel E. Hernández Lang">
           </div>          
           <!-- ── SLIDE 2 ──
                Replace with: <img src="images/photo2.jpg" alt="Your name"> -->
           <div class="carousel-slide active">
-            <img src="carousel3.jpg" alt="Dan Fernández-Lan">
+            <img src="carousel3.jpg" alt="Daniel E. Hernández Lang">
           </div>          
           <!-- ── SLIDE 3 ──
                Replace with: <img src="images/photo3.jpg" alt="Your name"> -->
           <div class="carousel-slide active">
-            <img src="carousel4.jpg" alt="Dan Fernández-Lan">
+            <img src="carousel4.jpg" alt="Daniel E. Hernández Lang">
           </div>          
 
           <!-- Add more slides by copying the block above -->
@@ -424,14 +442,14 @@
     <div class="section-label">About</div>
     <p>
       <!-- Replace with your own bio — one punchy sentence works great here -->
-      I am a postdoctoral researcher working on weak gravitational lensing,
-      large-scale structure, and the dark universe.
+      I am a PhD in astrophysics with a main interest in galaxy cluster cosmology, galaxy evolution, 
+      and Euclid photometry.
     </p>
     <p>
       <!-- Optional: a second, more detailed paragraph -->
-      Currently affiliated with the LSST and DES collaborations at [University], [City].
-      My work sits at the intersection of observational cosmology and statistical methods.
-      When not doing science, I paint.
+      Currently working as a postdoctoral researcher for the Euclid collaboration at the Ludwig-Maximilians-Universität München, München.
+      My work is mainly focused on validating Euclid data and photometry, with a side interest in cosmology and galaxy evolution in extreme environments.
+      When not doing science, I paint and do handicrafts.
     </p>
   </div>
 
@@ -440,8 +458,7 @@
     <span>
       <!-- Add your links here -->
       <a href="mailto:drdhlang@gmail.com">Email</a> &nbsp;·&nbsp;
-      <a href="https://github.com/dhernandezlang" target="_blank">GitHub</a> &nbsp;·&nbsp;
-      <a href="https://orcid.org/0000-0000-0000-0000" target="_blank">ORCID</a>
+      <a href="https://orcid.org/0000-0003-0194-6423" target="_blank">ORCID</a>
     </span>
   </footer>
 </div>
@@ -457,59 +474,72 @@
 
     <div class="project-card">
       <div class="project-meta">
-        <div class="project-year">2023 – present</div>
+        <div class="project-year">2020 - 2025</div>
         <div class="project-tags">
-          <span class="tag">LSST</span>
-          <span class="tag">Weak lensing</span>
+          <span class="tag">Thesis</span>
+          <span class="tag">Galaxy clusters</span>
+          <span class="tag">Cosmology</span>
         </div>
       </div>
       <div class="project-body">
-        <h3>Project title one</h3>
+        <h3>PhD thesis title: From galaxy clusters to cosmology</h3>
         <p>
-          Brief description of the project, what you did, what the goals were,
-          and any key results or publications associated with it.
+          This is the work I did for my PhD thesis. It ranges from a detailed study of a single galaxy cluster, 
+          how to create a cluster catalog, and finally, how to use galaxy clusters to predict cosmology. 
         </p>
-        <!-- Optional link:
-        <a class="project-link" href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank">arXiv →</a>
-        -->
+        <a class="project-link" href="https://edoc.ub.uni-muenchen.de/35457/" target="_blank">arXiv →</a>
       </div>
     </div>
 
     <div class="project-card">
       <div class="project-meta">
-        <div class="project-year">2021 – 2023</div>
+        <div class="project-year">2023</div>
         <div class="project-tags">
+          <span class="tag">Planck</span>
           <span class="tag">DES</span>
           <span class="tag">Galaxy clusters</span>
         </div>
       </div>
       <div class="project-body">
-        <h3>Project title two</h3>
+        <h3>The PSZ-MCMF catalogue of Planck clusters over the DES region</h3>
         <p>
-          Brief description of the project, what you did, what the goals were,
-          and any key results or publications associated with it.
+          I extended the number of galaxy clusters confirmed with Planck by going down to S/N of 3.
+          For this, my collaborators created a catalog of cluster candidates within the DES area and 
+          I then modified/run the MCMF cluster confirmation algorithm to find the best optical counterparts of each candidate.
+          The results yielded a cluster sample with 90% purity and 3 times as many clusters as previously reported.
         </p>
+        <a class="project-link" href="https://arxiv.org/abs/2210.04666" target="_blank">arXiv →</a>
+          <!-- Add this block for plots -->
+        <div class="project-plots">
+          <img src="plot1.jpg" alt="Description of plot" onclick="openLightbox('plot1.jpg')">
+          <img src="plot2.jpg" alt="Description of plot" onclick="openLightbox('plot2.jpg')">
+        </div>
       </div>
     </div>
 
     <div class="project-card">
       <div class="project-meta">
-        <div class="project-year">2019 – 2021</div>
+        <div class="project-year">2022</div>
         <div class="project-tags">
-          <span class="tag">Simulations</span>
-          <span class="tag">N-body</span>
+          <span class="tag">Galaxy evolution</span>
+          <span class="tag">Cluster mergers</span>
         </div>
       </div>
       <div class="project-body">
-        <h3>Project title three</h3>
+        <h3>Clash of Titans: A MUSE dynamical study of the extreme cluster merger SPT-CL J0307-6225</h3>
         <p>
-          Brief description of the project, what you did, what the goals were,
-          and any key results or publications associated with it.
+          In this work, I focus on the analysis of the merging galaxy cluster SPT-CL J0307-6225. 
+          Through an analysis of its merging dynamics, I separated the substructures and find a likely mass ratio of ~1.3. 
+          On the other hand, the analysis of the galaxy population suggests a previous merger within one of the substructures.
         </p>
+        <a class="project-link" href="https://arxiv.org/abs/2111.15443" target="_blank">arXiv →</a>
+          <!-- Add this block for plots -->
+        <div class="project-plots">
+          <img src="plot1.jpg" alt="Description of plot" onclick="openLightbox('plot1.jpg')">
+          <img src="plot2.jpg" alt="Description of plot" onclick="openLightbox('plot2.jpg')">
+        </div>
       </div>
     </div>
-
-    <!-- Copy a .project-card block above to add more projects -->
 
   </div>
 
@@ -534,20 +564,20 @@
 
         <div class="edu-item">
           <div class="edu-degree">PhD in Astrophysics</div>
-          <div class="edu-place">University name, City</div>
-          <div class="edu-date">2017 – 2022</div>
+          <div class="edu-place">LMU München, München, Germany</div>
+          <div class="edu-date">2020 – 2025</div>
         </div>
 
         <div class="edu-item">
           <div class="edu-degree">Master's in Astrophysics</div>
-          <div class="edu-place">University name, City</div>
-          <div class="edu-date">2015 – 2017</div>
+          <div class="edu-place">Universidad de La Serena, La Serena, Chile</div>
+          <div class="edu-date">2016 – 2019</div>
         </div>
 
         <div class="edu-item">
           <div class="edu-degree">Bachelor's in Physics</div>
-          <div class="edu-place">University name, City</div>
-          <div class="edu-date">2011 – 2015</div>
+          <div class="edu-place">Universidad de La Serena, La Serena, Chile</div>
+          <div class="edu-date">2012 – 2016</div>
         </div>
       </div>
 
@@ -557,26 +587,37 @@
         <div class="edu-item">
           <div class="edu-degree">Postdoctoral Researcher</div>
           <div class="edu-place">
-            LSST Project<br>
-            DES Project<br>
-            University name, City
+            Euclid Project<br>
+            LMU München, München
           </div>
-          <div class="edu-date">2022 – present</div>
+          <div class="edu-date">2025 – present</div>
         </div>
 
         <!-- Add more positions here -->
+        <div class="edu-item">
+          <div class="edu-degree">Postdoctoral Researcher</div>
+          <div class="edu-place">
+            PUNCH4NFDI Consortium<br>
+            LMU München, München
+          </div>
+          <div class="edu-date">02/2024 – 12/2024</div>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-degree">Postdoctoral Researcher</div>
+          <div class="edu-place">
+            MeerKLASS Project<br>
+            LMU München, München
+          </div>
+          <div class="edu-date">09/2023 – 01/2024</div>
+        </div>
+
       </div>
 
     </div>
 
     <div style="margin-top: 3rem; border-top: 0.5px solid var(--border); padding-top: 3rem;">
       <div class="section-label">Full CV</div>
-      <!--
-        After compiling your CV in Overleaf:
-        1. Download the PDF
-        2. Add it to your repo as cv.pdf
-        3. The link below will work automatically
-      -->
       <a class="cv-download" href="cv.pdf" target="_blank">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
           <path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 13h12"/>
@@ -596,13 +637,13 @@
 <!-- ══════════════════════════════ ART ══════════════════════════════ -->
 <div id="page-art" class="page">
   <div class="page-header">
-    <h2>Art</h2>
-    <p>Paintings and other works.</p>
+    <h2>Art & Crafts</h2>
+    <p>Paintings, amigurumis, and other works.</p>
   </div>
 
   <div class="content-area">
     <p class="art-intro">
-      A selection of paintings. <!-- Add a short note about your art practice if you like -->
+      I like doing handicrafts and paintings. Here is a selection of some of the creations I've made (mostly following tutorials).  <!-- Add a short note about your art practice if you like -->
     </p>
 
     <div class="art-grid" id="art-grid">
@@ -620,32 +661,32 @@
 
       <!-- Placeholder tiles — delete these once you add real paintings -->
       <div class="art-item" onclick="openLightbox('art1.jpg')">
-        <img src="art1.jpg" alt="Title" loading="lazy">
-        <div class="art-caption">Title, Year</div>
+        <img src="art1.jpg" alt="Misty Forest" loading="lazy">
+        <div class="art-caption">Misty Forest, 03/2026</div>
       </div>
       <div class="art-item" onclick="openLightbox('art2.jpg')">
-        <img src="art2.jpg" alt="Title" loading="lazy">
-        <div class="art-caption">Title, Year</div>
+        <img src="art2.jpg" alt="Random apple" loading="lazy">
+        <div class="art-caption">Random apple, 04/2026</div>
       </div>
       <div class="art-item" onclick="openLightbox('art3.jpg')">
-        <img src="art3.jpg" alt="Title" loading="lazy">
-        <div class="art-caption">Title, Year</div>
+        <img src="art3.jpg" alt="Huge Daisies" loading="lazy">
+        <div class="art-caption">Huge Daisies, 04/2026</div>
       </div>
       <div class="art-item" onclick="openLightbox('art4.MP.jpg')">
-        <img src="art4.MP.jpg" alt="Title" loading="lazy">
-        <div class="art-caption">Title, Year</div>
+        <img src="art4.MP.jpg" alt="Random field" loading="lazy">
+        <div class="art-caption">Random field, 04/2025</div>
       </div>
       <div class="art-item" onclick="openLightbox('art5.jpg')">
-        <img src="art5.jpg" alt="Title" loading="lazy">
-        <div class="art-caption">Title, Year</div>
+        <img src="art5.jpg" alt="Skinny Appa" loading="lazy">
+        <div class="art-caption">Skinny Appa, 06/2024</div>
       </div>
       <div class="art-item" onclick="openLightbox('craft1.jpg')">
-        <img src="craft1.jpg" alt="Title" loading="lazy">
-        <div class="art-caption">Title, Year</div>
+        <img src="craft1.jpg" alt="Grogu" loading="lazy">
+        <div class="art-caption">Grogu, 12/2024</div>
       </div>
       <div class="art-item" onclick="openLightbox('craft2.jpg')">
-        <img src="craft2.jpg" alt="Title" loading="lazy">
-        <div class="art-caption">Title, Year</div>
+        <img src="craft2.jpg" alt="Big Appa" loading="lazy">
+        <div class="art-caption">Big Appa, 09/2025</div>
       </div>
 
 
