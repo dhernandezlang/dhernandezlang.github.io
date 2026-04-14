@@ -569,12 +569,12 @@
         </div>
         -->
         <div class="project-plots">
-          <div class="plot-item" onclick="openLightbox('project1_plot1.png')">
-            <img src="project1_plot1.png" alt="Figure 1">
+          <div class="plot-item" onclick="openLightbox('project1_plot1.png', 'Fig. 1 — Your caption text here')">
+            <img src="project1_plot1.png" alt="Figure 1.1">
             <div class="plot-caption">Fig. 1 — Your caption text here</div>
           </div>
-          <div class="plot-item" onclick="openLightbox('project1_plot2.png')">
-            <img src="project1_plot2.png" alt="Figure 2">
+          <div class="plot-item" onclick="openLightbox('project1_plot2.png', 'Fig. 1 — Your caption text here')">
+            <img src="project1_plot2.png" alt="Figure 1.2">
             <div class="plot-caption">Fig. 2 — Your caption text here</div>
           </div>
         </div>
@@ -606,12 +606,12 @@
         </div>
         -->
         <div class="project-plots">
-          <div class="plot-item" onclick="openLightbox('project2_plot1.png')">
-            <img src="project2_plot1.png" alt="Figure 1">
+          <div class="plot-item" onclick="openLightbox('project2_plot1.png', 'Fig. 1 — Your caption text here')">
+            <img src="project2_plot1.png" alt="Figure 2.1">
             <div class="plot-caption">Fig. 1 — Your caption text here</div>
           </div>
-          <div class="plot-item" onclick="openLightbox('project2_plot2.png')">
-            <img src="project2_plot2.png" alt="Figure 2">
+          <div class="plot-item" onclick="openLightbox('project2_plot2.png', 'Fig. 1 — Your caption text here')">
+            <img src="project2_plot2.png" alt="Figure 2.2">
             <div class="plot-caption">Fig. 2 — Your caption text here</div>
           </div>
         </div>
@@ -902,10 +902,10 @@
     autoAdvance = setInterval(() => moveCarousel(1), 4000);
   }
 
-  /* ── Lightbox ── */
   /* ── Lightbox with navigation ── */
   let lightboxItems = [];
   let lightboxIndex = 0;
+  let lightboxMode = 'art'; // 'art' or 'plot'
   
   function buildLightboxItems() {
     lightboxItems = Array.from(document.querySelectorAll('.art-item img')).map(img => ({
@@ -915,13 +915,18 @@
   }
   
   function openLightbox(src, caption) {
-    // For art items — find index in the art array
-    const idx = lightboxItems.findIndex(item => item.src.includes(src.split('/').pop()));
+    const filename = src.split('/').pop();
+    const idx = lightboxItems.findIndex(item => item.src.split('/').pop() === filename);
+  
     if (idx !== -1) {
+      // Art item — enable navigation
+      lightboxMode = 'art';
       lightboxIndex = idx;
       showLightboxItem(lightboxIndex);
+      document.querySelectorAll('.lightbox-arrow').forEach(a => a.style.display = 'flex');
     } else {
-      // For plot images — no navigation, just show
+      // Plot item — no navigation, show caption passed directly
+      lightboxMode = 'plot';
       document.getElementById('lightbox-img').src = src;
       document.getElementById('lightbox-caption').textContent = caption || '';
       document.querySelectorAll('.lightbox-arrow').forEach(a => a.style.display = 'none');
@@ -932,10 +937,10 @@
   function showLightboxItem(i) {
     document.getElementById('lightbox-img').src = lightboxItems[i].src;
     document.getElementById('lightbox-caption').textContent = lightboxItems[i].caption;
-    document.querySelectorAll('.lightbox-arrow').forEach(a => a.style.display = 'flex');
   }
   
   function lightboxNav(dir) {
+    if (lightboxMode !== 'art') return;
     lightboxIndex = (lightboxIndex + lightboxItems.length + dir) % lightboxItems.length;
     showLightboxItem(lightboxIndex);
   }
@@ -956,7 +961,18 @@
     if (e.target === this) closeLightbox();
   });
   
-  // Build art items list on load
-  document.addEventListener('DOMContentLoaded', buildLightboxItems);</script>
+  // Swipe support for mobile
+  (function() {
+    let startX = 0;
+    const lb = document.getElementById('lightbox');
+    lb.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', e => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) lightboxNav(diff > 0 ? 1 : -1);
+    }, { passive: true });
+  })();
+  
+  document.addEventListener('DOMContentLoaded', buildLightboxItems);
+</script>
 </body>
 </html>
