@@ -11,6 +11,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
+      --page-bg: #f8f5f0;
       --white: #f8f5f0;
       --off-white: #ede9e2;
       --dark: #0e0e12;
@@ -24,11 +25,35 @@
       --font-body: 'DM Sans', sans-serif;
     }
 
+    /* ─── DARK MODE ─── */
+    [data-theme="dark"] {
+      --page-bg: #0d0d10;
+      --off-white: #16161e;
+      --text: #e0ddd6;
+      --muted: #8f8fa0;
+      --border: rgba(180,180,210,0.10);
+      --accent: #d4b98a;
+    }
+    [data-theme="dark"] body { background: #0d0d10; }
+    [data-theme="dark"] .astro-overlay-bottom {
+      background: linear-gradient(to top, #0d0d10, transparent);
+    }
+    [data-theme="dark"] .plot-item { background: #1a1a22; }
+    [data-theme="dark"] .cv-download {
+      border-color: rgba(224,221,214,0.4);
+      color: var(--text);
+    }
+    [data-theme="dark"] .cv-download:hover {
+      background: var(--text);
+      color: #0d0d10;
+    }
+    [data-theme="dark"] .art-placeholder-tile { background: var(--off-white); }
+
     html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--font-body);
-      background: var(--white);
+      background: var(--page-bg);
       color: var(--text);
       font-size: 16px;
       line-height: 1.7;
@@ -60,29 +85,58 @@
     .nav-links a:hover { color: var(--white); }
     .nav-links a.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-    /* ─── PAGES ─── */
-    .page { display: none; min-height: 100vh; }
-    .page.active { display: block; }
+    /* ─── NAV CONTROLS (theme + language) ─── */
+    .nav-controls {
+      display: flex; align-items: center; gap: 1.4rem;
+    }
+    .theme-toggle {
+      background: none; border: none; cursor: pointer;
+      color: rgba(248,245,240,0.50); padding: 4px;
+      display: flex; align-items: center;
+      transition: color 0.2s; line-height: 1;
+    }
+    .theme-toggle:hover { color: var(--white); }
+    .theme-toggle svg { width: 17px; height: 17px; display: block; }
+    .icon-sun { display: none; }
+    [data-theme="dark"] .icon-moon { display: none; }
+    [data-theme="dark"] .icon-sun { display: block; }
+
+    .lang-selector { display: flex; align-items: center; gap: 5px; }
+    .lang-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 11px; font-weight: 400; letter-spacing: 0.1em;
+      color: rgba(248,245,240,0.38);
+      transition: color 0.2s; padding: 0;
+      font-family: var(--font-body); text-transform: uppercase;
+    }
+    .lang-btn:hover { color: rgba(248,245,240,0.75); }
+    .lang-btn.active { color: var(--accent); }
+    .lang-sep { color: rgba(248,245,240,0.20); font-size: 10px; user-select: none; }
+
+    /* ─── ART PAGE TOGGLE ─── */
+    #page-art { display: none; }
+    .art-mode #main-content { display: none; }
+    .art-mode footer { display: none; }
+    .art-mode #page-art { display: block; }
 
     /* ─── HOME ─── */
-    /* Hero: astronomical background */
     .astro-hero {
       position: relative;
       height: 100vh;
       min-height: 600px;
       overflow: hidden;
       display: flex; align-items: center; justify-content: center;
+      background: #07070c;
+      contain: layout paint;
     }
-
-    /* The astronomical background image */
     .astro-bg {
       position: absolute; inset: 0;
       background-image: url('astro-bg-fixed.jpg');
       background-size: cover;
       background-position: center;
-      filter: brightness(0.55) saturate(1.2);
+      opacity: 0.55;
+      will-change: opacity;
     }
-    /* Gradient overlays */
     .astro-overlay-top {
       position: absolute; top: 0; left: 0; right: 0; height: 120px;
       background: linear-gradient(to bottom, rgba(14,14,18,0.7), transparent);
@@ -90,11 +144,9 @@
     }
     .astro-overlay-bottom {
       position: absolute; bottom: 0; left: 0; right: 0; height: 200px;
-      background: linear-gradient(to top, var(--white), transparent);
+      background: linear-gradient(to top, var(--page-bg), transparent);
       z-index: 1;
     }
-
-    /* Photo carousel */
     .carousel-wrap {
       position: relative; z-index: 2;
       display: flex; flex-direction: column; align-items: center;
@@ -115,7 +167,6 @@
       width: 100%; height: 100%;
       object-fit: cover;
     }
-    /* Placeholder shown when no real images */
     .photo-placeholder {
       width: 100%; height: 100%;
       background: linear-gradient(145deg, #1a1a2e, #16213e, #0f3460);
@@ -123,13 +174,11 @@
       align-items: center; justify-content: center;
       gap: 12px;
     }
-    .photo- span {
+    .photo-placeholder span {
       font-family: var(--font-display);
       font-size: 64px; font-weight: 300; color: rgba(200,169,122,0.4);
     }
     .photo-placeholder p { font-size: 13px; color: rgba(248,245,240,0.3); letter-spacing: 0.1em; text-transform: uppercase; }
-
-    /* Thin frame around carousel */
     .carousel::before {
       content: '';
       position: absolute; inset: -8px;
@@ -137,19 +186,13 @@
       border-radius: 4px;
       z-index: 3; pointer-events: none;
     }
-
-    /* Dots */
-    .carousel-dots {
-      display: flex; gap: 8px; z-index: 2;
-    }
+    .carousel-dots { display: flex; gap: 8px; z-index: 2; }
     .dot {
       width: 6px; height: 6px; border-radius: 50%;
       background: rgba(248,245,240,0.25);
       cursor: pointer; transition: background 0.2s, transform 0.2s;
     }
     .dot.active { background: var(--accent); transform: scale(1.3); }
-
-    /* Arrows */
     .carousel-arrow {
       position: absolute; top: 50%; transform: translateY(-50%);
       z-index: 4; background: rgba(14,14,18,0.5);
@@ -162,11 +205,7 @@
     .carousel-arrow:hover { background: rgba(200,169,122,0.3); }
     .carousel-arrow.prev { left: -52px; }
     .carousel-arrow.next { right: -52px; }
-
-    /* Name overlay below carousel */
-    .hero-name {
-      text-align: center; z-index: 2;
-    }
+    .hero-name { text-align: center; z-index: 2; }
     .hero-name h1 {
       font-family: var(--font-display);
       font-size: 42px; font-weight: 300; letter-spacing: 0.04em;
@@ -179,7 +218,7 @@
       text-shadow: 0 1px 12px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.5);
     }
 
-    /* About section below hero */
+    /* About section */
     .about-section {
       max-width: 720px; margin: 0 auto;
       padding: 5rem 2rem 4rem;
@@ -195,33 +234,34 @@
     }
     .about-section p + p { margin-top: 1.5rem; font-family: var(--font-body); font-size: 16px; color: var(--muted); }
 
-    /* ─── RESEARCH ─── */
+    /* ─── RESEARCH + RESUME SECTION HEADERS ─── */
     .page-header {
-      padding: 9rem 3rem 3rem;
-      background: var(--dark);
+      padding: 6rem 3rem 3rem;
+      background: var(--page-bg);
+      border-top: 0.5px solid var(--border);
       position: relative; overflow: hidden;
-    }
-    .page-header::before {
-      content: '';
-      position: absolute; top: -60px; right: -60px;
-      width: 400px; height: 400px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(122,159,200,0.08), transparent 70%);
+      scroll-margin-top: 56px;
     }
     .page-header h2 {
       font-family: var(--font-display);
-      font-size: 52px; font-weight: 300; color: var(--white);
+      font-size: 52px; font-weight: 300; color: var(--text);
       letter-spacing: 0.02em; position: relative; z-index: 1;
     }
     .page-header p {
-      font-size: 15px; color: rgba(248,245,240,0.45);
+      font-size: 15px; color: var(--muted);
       margin-top: 8px; position: relative; z-index: 1;
     }
+
+    /* Scroll targets offset */
+    #section-research { scroll-margin-top: 56px; }
+    #section-resume   { scroll-margin-top: 56px; }
 
     .content-area {
       max-width: 860px; margin: 0 auto;
       padding: 4rem 2rem;
     }
 
+    /* ─── RESEARCH ─── */
     .project-card {
       padding: 2rem 0;
       border-bottom: 0.5px solid var(--border);
@@ -229,7 +269,6 @@
       align-items: start;
     }
     .project-card:last-child { border-bottom: none; }
-    .project-meta { }
     .project-year {
       font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
       color: var(--muted);
@@ -245,9 +284,7 @@
       font-size: 24px; font-weight: 400; margin-bottom: 10px;
       color: var(--text);
     }
-    .project-body p {
-      font-size: 15px; color: var(--muted); line-height: 1.8;
-    }
+    .project-body p { font-size: 15px; color: var(--muted); line-height: 1.8; }
     .project-link {
       display: inline-block; margin-top: 14px;
       font-size: 13px; color: var(--accent2);
@@ -256,27 +293,16 @@
       transition: opacity 0.2s;
     }
     .project-link:hover { opacity: 0.7; }
-    .project-plots {
-      display: flex;
-      gap: 12px;
-      margin-top: 1.25rem;
-      flex-wrap: wrap;
-    }
+    .project-plots { display: flex; gap: 12px; margin-top: 1.25rem; flex-wrap: wrap; }
     .plot-item {
-      position: relative;
-      max-width: 48%;
-      border: 0.5px solid var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-      cursor: pointer;
+      position: relative; max-width: 48%;
+      border: 0.5px solid var(--border); border-radius: 2px;
+      overflow: hidden; cursor: pointer;
       background: var(--off-white);
     }
     .plot-item img {
-      height: 180px;
-      width: auto;
-      max-width: 100%;
-      object-fit: contain;
-      display: block;
+      height: 180px; width: auto; max-width: 100%;
+      object-fit: contain; display: block;
       transition: border-color 0.2s;
     }
     .plot-caption {
@@ -285,31 +311,22 @@
       background: rgba(14,14,18,0.75);
       color: rgba(248,245,240,0.9);
       font-size: 12px; line-height: 1.5;
-      opacity: 0;
-      transition: opacity 0.25s;
+      opacity: 0; transition: opacity 0.25s;
     }
     .plot-item:hover .plot-caption { opacity: 1; }
-    /* Always visible on touch devices */
-    @media (hover: none) {
-      .plot-caption { opacity: 1; }
-    }
+    @media (hover: none) { .plot-caption { opacity: 1; } }
+
     /* ─── RESUME ─── */
-    .resume-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
-    }
+    .resume-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
     .resume-col h3 {
       font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
       color: var(--accent); font-weight: 500; margin-bottom: 2rem;
     }
     .edu-item { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 0.5px solid var(--border); }
     .edu-item:last-child { border-bottom: none; }
-    .edu-degree {
-      font-family: var(--font-display);
-      font-size: 20px; font-weight: 400; margin-bottom: 4px;
-    }
+    .edu-degree { font-family: var(--font-display); font-size: 20px; font-weight: 400; margin-bottom: 4px; }
     .edu-place { font-size: 14px; color: var(--muted); }
     .edu-date { font-size: 12px; color: var(--accent); letter-spacing: 0.06em; margin-top: 4px; }
-
     .cv-download {
       display: inline-flex; align-items: center; gap: 12px;
       margin-top: 2rem; padding: 14px 28px;
@@ -318,7 +335,7 @@
       text-decoration: none; color: var(--text);
       transition: background 0.2s, color 0.2s;
     }
-    .cv-download:hover { background: var(--text); color: var(--white); }
+    .cv-download:hover { background: var(--text); color: var(--page-bg); }
     .cv-download svg { transition: transform 0.2s; }
     .cv-download:hover svg { transform: translateY(2px); }
 
@@ -328,41 +345,29 @@
       font-family: var(--font-display);
       font-size: 20px; font-weight: 300; color: var(--muted); line-height: 1.75;
     }
-    .art-grid {
-      columns: 3; column-gap: 16px;
-    }
+    .art-grid { columns: 3; column-gap: 16px; }
     .art-item {
       break-inside: avoid; margin-bottom: 16px;
       overflow: hidden; cursor: pointer;
       position: relative; border-radius: 1px;
     }
-    .art-item img {
-      width: 100%; display: block;
-      transition: transform 0.5s ease;
-      filter: saturate(0.85);
-    }
-    .art-item:hover img {
-      transform: scale(1.03);
-      filter: saturate(1);
-    }
+    .art-item img { width: 100%; display: block; transition: transform 0.5s ease; filter: saturate(0.85); }
+    .art-item:hover img { transform: scale(1.03); filter: saturate(1); }
     .art-caption {
       position: absolute; bottom: 0; left: 0; right: 0;
       padding: 1.5rem 1rem 0.75rem;
       background: linear-gradient(to top, rgba(14,14,18,0.75), transparent);
-      color: var(--white); font-size: 13px; opacity: 0;
-      transition: opacity 0.3s;
+      color: var(--white); font-size: 13px; opacity: 0; transition: opacity 0.3s;
     }
     .art-item:hover .art-caption { opacity: 1; }
-    /* Placeholder tiles */
     .art-placeholder-tile {
       break-inside: avoid; margin-bottom: 16px;
-      background: var(--off-white);
-      border: 0.5px solid var(--border);
+      background: var(--off-white); border: 0.5px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
       color: var(--muted); padding: 3rem 1rem; text-align: center;
     }
-    
+
     /* ─── LIGHTBOX ─── */
     .lightbox {
       display: none; position: fixed; inset: 0; z-index: 500;
@@ -375,15 +380,8 @@
       display: flex; flex-direction: column; align-items: center; gap: 10px;
       max-width: 90vw;
     }
-    .lightbox-inner img {
-      max-width: 90vw; max-height: 82vh;
-      width: auto; height: auto; display: block; border-radius: 1px;
-    }
-    .lightbox-caption {
-      font-size: 13px; color: rgba(248,245,240,0.55);
-      letter-spacing: 0.04em; text-align: center;
-      min-height: 1.2em;
-    }
+    .lightbox-inner img { max-width: 90vw; max-height: 82vh; width: auto; height: auto; display: block; border-radius: 1px; }
+    .lightbox-caption { font-size: 13px; color: rgba(248,245,240,0.55); letter-spacing: 0.04em; text-align: center; min-height: 1.2em; }
     .lightbox-close {
       position: absolute; top: 1.5rem; right: 2rem;
       color: var(--white); font-size: 28px; cursor: pointer;
@@ -398,9 +396,7 @@
       display: flex; align-items: center; justify-content: center;
     }
     .lightbox-arrow:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); }
-    @media (max-width: 600px) {
-      .lightbox-arrow { width: 36px; height: 36px; font-size: 14px; }
-    }
+
     /* ─── FOOTER ─── */
     footer {
       border-top: 0.5px solid var(--border);
@@ -410,22 +406,32 @@
     }
     footer a { color: var(--muted); text-decoration: none; border-bottom: 0.5px solid currentColor; }
 
+    /* ─── RESPONSIVE ─── */
     .logo-short { display: none; }
+    @media (max-width: 600px) {
+      .lightbox-arrow { width: 36px; height: 36px; font-size: 14px; }
+    }
+    @media (max-width: 680px) {
+      nav { padding: 0 1rem; }
+      .nav-links { gap: 1.2rem; }
+      .nav-links a { font-size: 11px; }
+      .nav-controls { gap: 0.8rem; }
+      .lang-btn { font-size: 10px; }
+    }
     @media (max-width: 500px) {
       .logo-full { display: none; }
       .logo-short { display: inline; }
-      .nav-links { gap: 1rem; }
-      .nav-links a { font-size: 11px; }
+      .nav-links { gap: 0.9rem; }
+      .nav-links a { font-size: 10px; letter-spacing: 0.05em; }
+      .lang-selector { display: none; }
     }
     @media (max-width: 700px) {
-      nav { padding: 0 1.5rem; }
-      .nav-links { gap: 1.5rem; }
       .carousel-arrow.prev { left: -40px; }
       .carousel-arrow.next { right: -40px; }
       .project-card { grid-template-columns: 1fr; gap: 0.5rem; }
       .resume-grid { grid-template-columns: 1fr; gap: 2rem; }
       .art-grid { columns: 2; }
-      .page-header { padding: 8rem 1.5rem 2rem; }
+      .page-header { padding: 5rem 1.5rem 2rem; }
       .content-area { padding: 2.5rem 1.5rem; }
     }
   </style>
@@ -433,414 +439,344 @@
 <body>
 
 <nav>
-  <a class="nav-logo" onclick="showPage('home')">
+  <a class="nav-logo" onclick="navTo('top')">
     <span class="logo-full">D. E. Hernández Lang</span>
     <span class="logo-short">DEHL</span>
   </a>
   <div class="nav-links">
-    <a onclick="showPage('home')" class="active" id="nav-home">Home</a>
-    <a onclick="showPage('research')" id="nav-research">Research</a>
-    <a onclick="showPage('resume')" id="nav-resume">Résumé</a>
-    <a onclick="showPage('art')" id="nav-art">Art & Crafts</a>
+    <a onclick="navTo('top')" class="active" id="nav-home" data-i18n="nav.home">Home</a>
+    <a onclick="navTo('section-research')" id="nav-research" data-i18n="nav.research">Research</a>
+    <a onclick="navTo('section-resume')" id="nav-resume" data-i18n="nav.resume">Résumé</a>
+    <a onclick="showArt()" id="nav-art" data-i18n="nav.art">Art &amp; Crafts</a>
+  </div>
+  <div class="nav-controls">
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+      <!-- Moon: visible in light mode -->
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <!-- Sun: visible in dark mode -->
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+    <div class="lang-selector">
+      <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+      <span class="lang-sep">·</span>
+      <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">ES</button>
+      <span class="lang-sep">·</span>
+      <button class="lang-btn" data-lang="de" onclick="setLanguage('de')">DE</button>
+    </div>
   </div>
 </nav>
 
-<!-- ═══════════════════════════════ HOME ═══════════════════════════════ -->
-<div id="page-home" class="page active">
+<!-- ═══════════════════ MAIN CONTENT (scrollable) ═══════════════════ -->
+<main id="main-content">
 
-  <div class="astro-hero">
-    <!-- Replace images/astro-bg-fixed.jpg with your own astronomical image -->
-    <div class="astro-bg"></div>
-    <div class="astro-overlay-top"></div>
-    <div class="astro-overlay-bottom"></div>
+  <!-- ══════════════════════════ HOME ══════════════════════════ -->
+  <section id="section-home">
+    <div class="astro-hero">
+      <div class="astro-bg"></div>
+      <div class="astro-overlay-top"></div>
+      <div class="astro-overlay-bottom"></div>
 
-    <div class="carousel-wrap">
-      <div style="position:relative;">
-        <div class="carousel" id="carousel">
-
-          <!-- ── SLIDE 1 ──
-               Replace with: <img src="images/photo1.jpg" alt="Your name"> -->
-          <div class="carousel-slide active">
-            <img src="carousel2.jpg" alt="Daniel E. Hernández Lang">
-          </div>          
-          <!-- ── SLIDE 2 ──
-               Replace with: <img src="images/photo2.jpg" alt="Your name"> -->
-          <div class="carousel-slide active">
-            <img src="carousel3.jpg" alt="Daniel E. Hernández Lang">
-          </div>          
-          <!-- ── SLIDE 3 ──
-               Replace with: <img src="images/photo3.jpg" alt="Your name"> -->
-          <div class="carousel-slide active">
-            <img src="carousel4.jpg" alt="Daniel E. Hernández Lang">
-          </div>          
-
-          <!-- Add more slides by copying the block above -->
-
+      <div class="carousel-wrap">
+        <div style="position:relative;">
+          <div class="carousel" id="carousel">
+            <div class="carousel-slide active">
+              <img src="carousel2.jpg" alt="Daniel E. Hernández Lang">
+            </div>
+            <div class="carousel-slide">
+              <img src="carousel3.jpg" alt="Daniel E. Hernández Lang">
+            </div>
+            <div class="carousel-slide">
+              <img src="carousel4.jpg" alt="Daniel E. Hernández Lang">
+            </div>
+          </div>
+          <button class="carousel-arrow prev" onclick="moveCarousel(-1)">&#8592;</button>
+          <button class="carousel-arrow next" onclick="moveCarousel(1)">&#8594;</button>
         </div>
-        <button class="carousel-arrow prev" onclick="moveCarousel(-1)">&#8592;</button>
-        <button class="carousel-arrow next" onclick="moveCarousel(1)">&#8594;</button>
-      </div>
 
-      <div class="carousel-dots" id="dots"></div>
+        <div class="carousel-dots" id="dots"></div>
 
-      <div class="hero-name">
-        <h1>Daniel E. Hernández Lang</h1>
-        <div class="role">Postdoctoral Researcher · Astrophysics</div>
+        <div class="hero-name">
+          <h1>Daniel E. Hernández Lang</h1>
+          <div class="role" data-i18n="hero.role">Postdoctoral Researcher · Astrophysics</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="about-section">
-    <div class="section-label">About</div>
-    <p>
-      <!-- Replace with your own bio — one punchy sentence works great here -->
-      I am a PhD in astrophysics with a main interest in galaxy cluster cosmology, galaxy evolution, 
-      and Euclid photometry.
-    </p>
-    <p>
-      <!-- Optional: a second, more detailed paragraph -->
-      Currently working as a postdoctoral researcher for the Euclid collaboration at the Ludwig-Maximilians-Universität München, München.
-      My work is mainly focused on validating Euclid data and photometry, with a side interest in cosmology and galaxy evolution in extreme environments.
-      When not doing science, I paint and do handicrafts.
-    </p>
-  </div>
+    <div class="about-section">
+      <div class="section-label" data-i18n="about.label">About</div>
+      <p data-i18n="about.p1">
+        I am a PhD in astrophysics with a main interest in galaxy cluster cosmology, galaxy evolution,
+        and Euclid photometry.
+      </p>
+      <p data-i18n="about.p2">
+        Currently working as a postdoctoral researcher for the Euclid collaboration at the
+        Ludwig-Maximilians-Universität München, München.
+        My work is mainly focused on validating Euclid data and photometry, with a side interest in
+        cosmology and galaxy evolution in extreme environments.
+        When not doing science, I paint and do handicrafts.
+      </p>
+    </div>
+  </section>
 
-  <footer>
-    <span>Daniel E. Hernández Lang</span>
-    <span>
-      <!-- Add your links here -->
-      <a href="mailto:drdhlang@gmail.com">Email</a> &nbsp;·&nbsp;
-      <a href="https://orcid.org/0000-0003-0194-6423" target="_blank">ORCID</a> &nbsp;·&nbsp;
-      <a href="https://www.linkedin.com/in/daniel-hernandez-lang/" target="_blank">LinkedIN</a>
-    </span>
-  </footer>
-</div>
+  <!-- ══════════════════════ RESEARCH ══════════════════════ -->
+  <section id="section-research">
+    <div class="page-header">
+      <h2 data-i18n="research.header">Research &amp; Projects</h2>
+      <p data-i18n="research.subtitle">A selection of projects I have worked on.</p>
+    </div>
 
-<!-- ══════════════════════════ RESEARCH ══════════════════════════ -->
-<div id="page-research" class="page">
-  <div class="page-header">
-    <h2>Research &amp; Projects</h2>
-    <p>A selection of projects I have worked on.</p>
+    <div class="content-area">
+
+      <div class="project-card">
+        <div class="project-meta">
+          <div class="project-year">2020 – 2025</div>
+          <div class="project-tags">
+            <span class="tag">Thesis</span>
+            <span class="tag">Galaxy clusters</span>
+            <span class="tag">Cosmology</span>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 data-i18n="p1.title">PhD thesis: From galaxy clusters to cosmology</h3>
+          <p data-i18n="p1.desc">
+            This is the work I did for my PhD thesis. It ranges from a detailed study of a single galaxy cluster,
+            how to create a cluster catalog, and finally, how to use galaxy clusters to predict cosmology.
+          </p>
+          <a class="project-link" href="https://edoc.ub.uni-muenchen.de/35457/" target="_blank" data-i18n="p1.link">LMU archive →</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-meta">
+          <div class="project-year">2023</div>
+          <div class="project-tags">
+            <span class="tag">Planck</span>
+            <span class="tag">DES</span>
+            <span class="tag">Galaxy clusters</span>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 data-i18n="p2.title">The PSZ-MCMF catalogue of Planck clusters over the DES region</h3>
+          <p data-i18n="p2.desc">
+            I extended the number of galaxy clusters confirmed with Planck by going down to S/N of 3.
+            For this, my collaborators created a catalog of cluster candidates within the DES area and
+            I then modified/run the MCMF cluster confirmation algorithm to find the best optical counterparts
+            of each candidate. The results yielded a cluster sample with 90% purity and 3 times as many
+            clusters as previously reported.
+          </p>
+          <a class="project-link" href="https://arxiv.org/abs/2210.04666" target="_blank" data-i18n="p2.link">arXiv →</a>
+          <div class="project-plots">
+            <div class="plot-item" onclick="openLightbox('project1_plot1.png', '', this)">
+              <img src="project1_plot1.png" alt="Figure 1.1">
+              <div class="plot-caption">Fig. 1 — Mass versus redshift for the different cluster samples MARD-Y3, PSZ2, SPT, and the PSZ-MCMF cluster catalogue. New PSZ-MCMF clusters identified in this analysis (no match to PSZ2, SPT, or MARD-Y3) are shown with red dots whereas clusters that match with at least one of the other catalogues appear as black circles.</div>
+            </div>
+            <div class="plot-item" onclick="openLightbox('project1_plot2.png', '', this)">
+              <img src="project1_plot2.png" alt="Figure 1.2">
+              <div class="plot-caption">Fig. 2 — Redshift distribution of the PSZ-MCMF clusters (red) and the PSZ2 clusters within the DES region (blue). The new PSZ-MCMF catalogue presented here is significantly larger and extends to higher redshift.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-meta">
+          <div class="project-year">2022</div>
+          <div class="project-tags">
+            <span class="tag">Galaxy evolution</span>
+            <span class="tag">Cluster mergers</span>
+          </div>
+        </div>
+        <div class="project-body">
+          <h3 data-i18n="p3.title">Clash of Titans: A MUSE dynamical study of the extreme cluster merger SPT-CL J0307-6225</h3>
+          <p data-i18n="p3.desc">
+            In this work, I focus on the analysis of the merging galaxy cluster SPT-CL J0307-6225.
+            Through an analysis of its merging dynamics, I separated the substructures and find a likely
+            mass ratio of ~1.3. On the other hand, the analysis of the galaxy population suggests a
+            previous merger within one of the substructures.
+          </p>
+          <a class="project-link" href="https://arxiv.org/abs/2111.15443" target="_blank" data-i18n="p3.link">arXiv →</a>
+          <div class="project-plots">
+            <div class="plot-item" onclick="openLightbox('project2_plot1.png', '', this)">
+              <img src="project2_plot1.png" alt="Figure 2.1">
+              <div class="plot-caption">Fig. 1 — Sky positions of the MUSE cluster galaxies on top of the X-ray map with the orange contour showing the outermost X-ray contour. Circles are red galaxies and triangles are blue galaxies, colour coded by their spectral type with cyan crosses being galaxies with S/N < 3, and the red filled triangle representing a PSB galaxy.</div>
+            </div>
+            <div class="plot-item" onclick="openLightbox('project2_plot2.png', '', this)">
+              <img src="project2_plot2.png" alt="Figure 2.2">
+              <div class="plot-caption">Fig. 2 — Fraction of EL (blue) and NEL (red) galaxies with respect to the distance to the centres of 0307-6225S and 0307-6225N (continuous lines) and the SZ centre (dotted lines)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════ RÉSUMÉ ══════════════════════ -->
+  <section id="section-resume">
+    <div class="page-header">
+      <h2 data-i18n="resume.header">Résumé</h2>
+      <p data-i18n="resume.subtitle">Academic background and full CV.</p>
+    </div>
+
+    <div class="content-area">
+      <div class="resume-grid">
+
+        <div class="resume-col">
+          <h3 data-i18n="edu.title">Education</h3>
+
+          <div class="edu-item">
+            <div class="edu-degree" data-i18n="edu.d1">PhD in Astrophysics</div>
+            <div class="edu-place">LMU München, München, Germany</div>
+            <div class="edu-date">2020 – 2025</div>
+          </div>
+
+          <div class="edu-item">
+            <div class="edu-degree" data-i18n="edu.d2">Master's in Astrophysics</div>
+            <div class="edu-place">Universidad de La Serena, La Serena, Chile</div>
+            <div class="edu-date">2016 – 2019</div>
+          </div>
+
+          <div class="edu-item">
+            <div class="edu-degree" data-i18n="edu.d3">Bachelor's in Physics</div>
+            <div class="edu-place">Universidad de La Serena, La Serena, Chile</div>
+            <div class="edu-date">2012 – 2016</div>
+          </div>
+        </div>
+
+        <div class="resume-col">
+          <h3 data-i18n="pos.title">Positions</h3>
+
+          <div class="edu-item">
+            <div class="edu-degree" data-i18n="pos.t1">Postdoctoral Researcher</div>
+            <div class="edu-place">Euclid Project<br>LMU München, München</div>
+            <div class="edu-date">01/2025 – present</div>
+          </div>
+
+          <div class="edu-item">
+            <div class="edu-degree" data-i18n="pos.t2">Postdoctoral Researcher</div>
+            <div class="edu-place">PUNCH4NFDI Consortium<br>LMU München, München</div>
+            <div class="edu-date">02/2024 – 12/2024</div>
+          </div>
+
+          <div class="edu-item">
+            <div class="edu-degree" data-i18n="pos.t3">Postdoctoral Researcher</div>
+            <div class="edu-place">MeerKLASS Project<br>LMU München, München</div>
+            <div class="edu-date">09/2023 – 01/2024</div>
+          </div>
+
+          <div class="edu-item">
+            <div class="edu-degree" data-i18n="pos.t4">Research assistant</div>
+            <div class="edu-place">Gemini Observatory<br>AURA, La Serena</div>
+            <div class="edu-date">04/2019 – 07/2019</div>
+          </div>
+
+          <div class="edu-item">
+            <div class="edu-degree" data-i18n="pos.t5">Research assistant</div>
+            <div class="edu-place">Cerro Tololo Inter-American Observatory<br>AURA, La Serena</div>
+            <div class="edu-date">11/2017 – 12/2018</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top: 3rem; border-top: 0.5px solid var(--border); padding-top: 3rem;">
+        <div class="section-label" data-i18n="cv.label">Full CV</div>
+        <!-- Replace the href below with your Google Drive direct-view link -->
+        <a class="cv-download" href="https://drive.google.com/file/d/REPLACE_WITH_YOUR_FILE_ID/view" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 13h12"/>
+          </svg>
+          <span data-i18n="cv.download">Download CV (PDF)</span>
+        </a>
+        <p style="margin-top:1rem; font-size:13px; color:var(--muted);" data-i18n="cv.updated">Last updated: April 2026</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════════════════ ART (separate overlay) ══════════════════════════ -->
+<div id="page-art">
+  <div class="page-header" style="padding-top: 5rem;">
+    <h2 data-i18n="art.header">Art &amp; Crafts</h2>
+    <p data-i18n="art.subtitle">Paintings, amigurumis, and other works.</p>
   </div>
 
   <div class="content-area">
-
-    <div class="project-card">
-      <div class="project-meta">
-        <div class="project-year">2020 - 2025</div>
-        <div class="project-tags">
-          <span class="tag">Thesis</span>
-          <span class="tag">Galaxy clusters</span>
-          <span class="tag">Cosmology</span>
-        </div>
-      </div>
-      <div class="project-body">
-        <h3>PhD thesis title: From galaxy clusters to cosmology</h3>
-        <p>
-          This is the work I did for my PhD thesis. It ranges from a detailed study of a single galaxy cluster, 
-          how to create a cluster catalog, and finally, how to use galaxy clusters to predict cosmology. 
-        </p>
-        <a class="project-link" href="https://edoc.ub.uni-muenchen.de/35457/" target="_blank">LMU archive →</a>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <div class="project-meta">
-        <div class="project-year">2023</div>
-        <div class="project-tags">
-          <span class="tag">Planck</span>
-          <span class="tag">DES</span>
-          <span class="tag">Galaxy clusters</span>
-        </div>
-      </div>
-      <div class="project-body">
-        <h3>The PSZ-MCMF catalogue of Planck clusters over the DES region</h3>
-        <p>
-          I extended the number of galaxy clusters confirmed with Planck by going down to S/N of 3.
-          For this, my collaborators created a catalog of cluster candidates within the DES area and 
-          I then modified/run the MCMF cluster confirmation algorithm to find the best optical counterparts of each candidate.
-          The results yielded a cluster sample with 90% purity and 3 times as many clusters as previously reported.
-        </p>
-        <a class="project-link" href="https://arxiv.org/abs/2210.04666" target="_blank">arXiv →</a>
-          <!-- Add this block for plots -->
-        <!--
-        <div class="project-plots">
-          <img src="project1_plot1.png" alt="Description of plot" onclick="openLightbox('project1_plot1.png')">
-          <img src="project1_plot2.png" alt="Description of plot" onclick="openLightbox('project1_plot2.png')">
-        </div>
-        -->
-        <div class="project-plots">
-          <div class="plot-item" onclick="openLightbox('project1_plot1.png', 'Fig. 1 — Mass versus redshift for the different cluster samples MARD-Y3, PSZ2, SPT, and the PSZ-MCMF cluster catalogue. New PSZ-MCMF clusters identified in this analysis (no match to PSZ2, SPT, or MARD-Y3) are shown with red dots whereas clusters that match with at least one of the other catalogues appear as black circles.')">
-            <img src="project1_plot1.png" alt="Figure 1.1">
-            <div class="plot-caption">Fig. 1 — Mass versus redshift for the different cluster samples MARD-Y3, PSZ2, SPT, and the PSZ-MCMF cluster catalogue. New PSZ-MCMF clusters identified in this analysis (no match to PSZ2, SPT, or MARD-Y3) are shown with red dots whereas clusters that match with at least one of the other catalogues appear as black circles.</div>
-          </div>
-          <div class="plot-item" onclick="openLightbox('project1_plot2.png', 'Fig. 2 — Redshift distribution of the PSZ-MCMF clusters (red) and the PSZ2 clusters within the DES region (blue). The new PSZ-MCMF catalogue presented here is significantly larger and extends to higher redshift.')">
-            <img src="project1_plot2.png" alt="Figure 1.2">
-            <div class="plot-caption">Fig. 2 — Redshift distribution of the PSZ-MCMF clusters (red) and the PSZ2 clusters within the DES region (blue). The new PSZ-MCMF catalogue presented here is significantly larger and extends to higher redshift.</div>
-          </div>
-        </div>
-          
-      </div>
-    </div>
-
-    <div class="project-card">
-      <div class="project-meta">
-        <div class="project-year">2022</div>
-        <div class="project-tags">
-          <span class="tag">Galaxy evolution</span>
-          <span class="tag">Cluster mergers</span>
-        </div>
-      </div>
-      <div class="project-body">
-        <h3>Clash of Titans: A MUSE dynamical study of the extreme cluster merger SPT-CL J0307-6225</h3>
-        <p>
-          In this work, I focus on the analysis of the merging galaxy cluster SPT-CL J0307-6225. 
-          Through an analysis of its merging dynamics, I separated the substructures and find a likely mass ratio of ~1.3. 
-          On the other hand, the analysis of the galaxy population suggests a previous merger within one of the substructures.
-        </p>
-        <a class="project-link" href="https://arxiv.org/abs/2111.15443" target="_blank">arXiv →</a>
-          <!-- Add this block for plots -->
-        <!--
-        <div class="project-plots">
-          <img src="project2_plot1.png" alt="Description of plot" onclick="openLightbox('project2_plot1.png')">
-          <img src="project2_plot2.png" alt="Description of plot" onclick="openLightbox('project2_plot2.png')">
-        </div>
-        -->
-        <div class="project-plots">
-          <div class="plot-item" onclick="openLightbox('project2_plot1.png', 'Fig. 1 — Sky positions of the MUSE cluster galaxies on top of the X-ray map with the orange contour showing the outermost X-ray contour. Circles are red galaxies and triangles are blue galaxies, colour coded by their spectral type with cyan crosses being galaxies with S/N < 3, and the red filled triangle representing a PSB galaxy.')">
-            <img src="project2_plot1.png" alt="Figure 2.1">
-            <div class="plot-caption">Fig. 1 — Sky positions of the MUSE cluster galaxies on top of the X-ray map with the orange contour showing the outermost X-ray contour. Circles are red galaxies and triangles are blue galaxies, colour coded by their spectral type with cyan crosses being galaxies with S/N < 3, and the red filled triangle representing a PSB galaxy.</div>
-          </div>
-          <div class="plot-item" onclick="openLightbox('project2_plot2.png', 'Fig. 2 — Fraction of EL (blue) and NEL (red) galaxies with respect to the distance to the centres of 0307-6225S and 0307-6225N (continuous lines) and the SZ centre (dotted lines)')">
-            <img src="project2_plot2.png" alt="Figure 2.2">
-            <div class="plot-caption">Fig. 2 — Fraction of EL (blue) and NEL (red) galaxies with respect to the distance to the centres of 0307-6225S and 0307-6225N (continuous lines) and the SZ centre (dotted lines)</div>
-          </div>
-        </div>
-        
-      </div>
-    </div>
-
-  </div>
-
-  <footer>
-    <span>Daniel E. Hernández Lang</span>
-    <span>
-      <!-- Add your links here -->
-      <a href="mailto:drdhlang@gmail.com">Email</a> &nbsp;·&nbsp;
-      <a href="https://orcid.org/0000-0003-0194-6423" target="_blank">ORCID</a> &nbsp;·&nbsp;
-      <a href="https://www.linkedin.com/in/daniel-hernandez-lang/" target="_blank">LinkedIN</a>
-    </span>
-  </footer>
-</div>
-
-<!-- ════════════════════════════ RÉSUMÉ ════════════════════════════ -->
-<div id="page-resume" class="page">
-  <div class="page-header">
-    <h2>Résumé</h2>
-    <p>Academic background and full CV.</p>
-  </div>
-
-  <div class="content-area">
-    <div class="resume-grid">
-
-      <div class="resume-col">
-        <h3>Education</h3>
-
-        <div class="edu-item">
-          <div class="edu-degree">PhD in Astrophysics</div>
-          <div class="edu-place">LMU München, München, Germany</div>
-          <div class="edu-date">2020 – 2025</div>
-        </div>
-
-        <div class="edu-item">
-          <div class="edu-degree">Master's in Astrophysics</div>
-          <div class="edu-place">Universidad de La Serena, La Serena, Chile</div>
-          <div class="edu-date">2016 – 2019</div>
-        </div>
-
-        <div class="edu-item">
-          <div class="edu-degree">Bachelor's in Physics</div>
-          <div class="edu-place">Universidad de La Serena, La Serena, Chile</div>
-          <div class="edu-date">2012 – 2016</div>
-        </div>
-      </div>
-
-      <div class="resume-col">
-        <h3>Positions</h3>
-
-        <div class="edu-item">
-          <div class="edu-degree">Postdoctoral Researcher</div>
-          <div class="edu-place">
-            Euclid Project<br>
-            LMU München, München
-          </div>
-          <div class="edu-date">01/2025 – present</div>
-        </div>
-
-        <!-- Add more positions here -->
-        <div class="edu-item">
-          <div class="edu-degree">Postdoctoral Researcher</div>
-          <div class="edu-place">
-            PUNCH4NFDI Consortium<br>
-            LMU München, München
-          </div>
-          <div class="edu-date">02/2024 – 12/2024</div>
-        </div>
-
-        <div class="edu-item">
-          <div class="edu-degree">Postdoctoral Researcher</div>
-          <div class="edu-place">
-            MeerKLASS Project<br>
-            LMU München, München
-          </div>
-          <div class="edu-date">09/2023 – 01/2024</div>
-        </div>
-
-        <div class="edu-item">
-          <div class="edu-degree">Research assistant</div>
-          <div class="edu-place">
-            Gemini Observatory<br>
-            AURA, La Serena
-          </div>
-          <div class="edu-date">04/2019 – 07/2019</div>
-        </div>
-
-        <div class="edu-item">
-          <div class="edu-degree">Research assistant</div>
-          <div class="edu-place">
-            Cerro Tololo Inter-American Observatory<br>
-            AURA, La Serena
-          </div>
-          <div class="edu-date">11/2017 – 12/2018</div>
-        </div>
-
-        
-      </div>
-
-    </div>
-
-    <div style="margin-top: 3rem; border-top: 0.5px solid var(--border); padding-top: 3rem;">
-      <div class="section-label">Full CV</div>
-      <a class="cv-download" href="cv.pdf" target="_blank">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
-          <path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 13h12"/>
-        </svg>
-        Download CV (PDF)
-      </a>
-      <p style="margin-top:1rem; font-size:13px; color:var(--muted);">Last updated: April 2026</p>
-    </div>
-  </div>
-
-  <footer>
-    <span>Daniel E. Hernández Lang</span>
-    <span>
-      <!-- Add your links here -->
-      <a href="mailto:drdhlang@gmail.com">Email</a> &nbsp;·&nbsp;
-      <a href="https://orcid.org/0000-0003-0194-6423" target="_blank">ORCID</a> &nbsp;·&nbsp;
-      <a href="https://www.linkedin.com/in/daniel-hernandez-lang/" target="_blank">LinkedIN</a>
-    </span>
-  </footer>
-</div>
-
-<!-- ══════════════════════════════ ART ══════════════════════════════ -->
-<div id="page-art" class="page">
-  <div class="page-header">
-    <h2>Art & Crafts</h2>
-    <p>Paintings, amigurumis, and other works.</p>
-  </div>
-
-  <div class="content-area">
-    <p class="art-intro">
-      I like doing handicrafts and paintings. Here is a selection of some of the creations I've made (mostly following tutorials).  <!-- Add a short note about your art practice if you like -->
+    <p class="art-intro" data-i18n="art.intro">
+      I like doing handicrafts and paintings. Here is a selection of some of the creations I've made (mostly following tutorials).
     </p>
 
     <div class="art-grid" id="art-grid">
-      <!--
-        To add a painting, copy this block and replace the src and caption:
-
-        <div class="art-item" onclick="openLightbox('images/painting1.jpg')">
-          <img src="images/painting1.jpg" alt="Painting title" loading="lazy">
-          <div class="art-caption">Painting title, Year</div>
-        </div>
-
-        The masonry grid handles different image heights automatically.
-        Tip: mix portrait and landscape images for a more dynamic layout.
-      -->
-
-      <!-- Placeholder tiles — delete these once you add real paintings -->
-      <div class="art-item" onclick="openLightbox('art1.jpg', 'Misty Forest', '03/2026')">
+      <div class="art-item" onclick="openLightbox('art1.jpg', 'Misty Forest, 03/2026')">
         <img src="art1.jpg" alt="Misty Forest" loading="lazy">
         <div class="art-caption">Misty Forest, 03/2026</div>
       </div>
-      <div class="art-item" onclick="openLightbox('art2.jpg', 'Huge Daisies', '04/2026')">
+      <div class="art-item" onclick="openLightbox('art2.jpg', 'Huge Daisies, 04/2026')">
         <img src="art2.jpg" alt="Huge Daisies" loading="lazy">
         <div class="art-caption">Huge Daisies, 04/2026</div>
       </div>
-      <div class="art-item" onclick="openLightbox('art3.jpg', 'Random apple', '04/2026')">
+      <div class="art-item" onclick="openLightbox('art3.jpg', 'Random apple, 04/2026')">
         <img src="art3.jpg" alt="Random apple" loading="lazy">
         <div class="art-caption">Random apple, 04/2026</div>
       </div>
-      <div class="art-item" onclick="openLightbox('art4.MP.jpg', 'Random field', '04/2025')">
+      <div class="art-item" onclick="openLightbox('art4.MP.jpg', 'Random field, 04/2025')">
         <img src="art4.MP.jpg" alt="Random field" loading="lazy">
         <div class="art-caption">Random field, 04/2025</div>
       </div>
-      <div class="art-item" onclick="openLightbox('art5.jpg', 'Skinny Appa', '06/2024')">
+      <div class="art-item" onclick="openLightbox('art5.jpg', 'Skinny Appa, 06/2024')">
         <img src="art5.jpg" alt="Skinny Appa" loading="lazy">
         <div class="art-caption">Skinny Appa, 06/2024</div>
       </div>
-      <div class="art-item" onclick="openLightbox('craft1.jpg', 'Grogu', '12/2024')">
+      <div class="art-item" onclick="openLightbox('craft1.jpg', 'Grogu, 12/2024')">
         <img src="craft1.jpg" alt="Grogu" loading="lazy">
         <div class="art-caption">Grogu, 12/2024</div>
       </div>
-      <div class="art-item" onclick="openLightbox('craft2.jpg', 'Big Appa', '09/2025')">
+      <div class="art-item" onclick="openLightbox('craft2.jpg', 'Big Appa, 09/2025')">
         <img src="craft2.jpg" alt="Big Appa" loading="lazy">
         <div class="art-caption">Big Appa, 09/2025</div>
       </div>
-      <div class="art-item" onclick="openLightbox('craft3.jpg', 'Kirby', '12/2025')">
+      <div class="art-item" onclick="openLightbox('craft3.jpg', 'Kirby, 12/2025')">
         <img src="craft3.jpg" alt="Kirby" loading="lazy">
         <div class="art-caption">Kirby, 12/2025</div>
       </div>
-      <div class="art-item" onclick="openLightbox('astrophoto4.jpg', 'Large Magellanic Cloud', '12/2022')">
+      <div class="art-item" onclick="openLightbox('astrophoto4.jpg', 'Large Magellanic Cloud, 12/2022')">
         <img src="astrophoto4.jpg" alt="Large Magellanic Cloud" loading="lazy">
         <div class="art-caption">Large Magellanic Cloud, 12/2022</div>
       </div>
-      <div class="art-item" onclick="openLightbox('astrophoto3.jpg', 'LMC and SMC from Curacaví', '12/2022')">
+      <div class="art-item" onclick="openLightbox('astrophoto3.jpg', 'LMC and SMC from Curacaví, 12/2022')">
         <img src="astrophoto3.jpg" alt="LMC and SMC from Curacaví" loading="lazy">
         <div class="art-caption">LMC and SMC from Curacaví, 12/2022</div>
       </div>
-      <div class="art-item" onclick="openLightbox('astrophoto2.jpg', 'Milky Way from Elqui Valley', '01/2022')">
+      <div class="art-item" onclick="openLightbox('astrophoto2.jpg', 'Milky Way from Elqui Valley, 01/2022')">
         <img src="astrophoto2.jpg" alt="Milky Way from Elqui Valley" loading="lazy">
         <div class="art-caption">Milky Way from Elqui Valley, 01/2022</div>
       </div>
-      <div class="art-item" onclick="openLightbox('astrophoto1.jpg', 'Milky way and yours truly', '01/2022')">
+      <div class="art-item" onclick="openLightbox('astrophoto1.jpg', 'Milky way and yours truly, 01/2022')">
         <img src="astrophoto1.jpg" alt="Milky way and yours truly" loading="lazy">
         <div class="art-caption">Milky way and yours truly, 01/2022</div>
       </div>
-
-      <!--
-      <div class="art-placeholder-tile" style="height:260px;">painting 1</div>
-      <div class="art-placeholder-tile" style="height:340px;">painting 2</div>
-      <div class="art-placeholder-tile" style="height:220px;">painting 3</div>
-      <div class="art-placeholder-tile" style="height:300px;">painting 4</div>
-      <div class="art-placeholder-tile" style="height:260px;">painting 5</div>
-      <div class="art-placeholder-tile" style="height:380px;">painting 6</div>
-      <div class="art-placeholder-tile" style="height:240px;">painting 7</div>
-      <div class="art-placeholder-tile" style="height:300px;">painting 8</div>
-      <div class="art-placeholder-tile" style="height:280px;">painting 9</div>
-      -->
     </div>
   </div>
-
-  <footer>
-    <span>Daniel E. Hernández Lang</span>
-    <span>
-      <!-- Add your links here -->
-      <a href="mailto:drdhlang@gmail.com">Email</a> &nbsp;·&nbsp;
-      <a href="https://orcid.org/0000-0003-0194-6423" target="_blank">ORCID</a> &nbsp;·&nbsp;
-      <a href="https://www.linkedin.com/in/daniel-hernandez-lang/" target="_blank">LinkedIN</a>
-    </span>
-  </footer>
 </div>
+
+<!-- Single shared footer -->
+<footer>
+  <span>Daniel E. Hernández Lang</span>
+  <span>
+    <a href="mailto:drdhlang@gmail.com" data-i18n="footer.email">Email</a> &nbsp;·&nbsp;
+    <a href="https://orcid.org/0000-0003-0194-6423" target="_blank">ORCID</a> &nbsp;·&nbsp;
+    <a href="https://www.linkedin.com/in/daniel-hernandez-lang/" target="_blank">LinkedIn</a>
+  </span>
+</footer>
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
@@ -852,143 +788,353 @@
   </div>
   <button class="lightbox-arrow next" onclick="lightboxNav(1)">&#8594;</button>
 </div>
+
 <script>
-  /* ── Page navigation ── */
-  function showPage(name) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-    document.getElementById('page-' + name).classList.add('active');
-    document.getElementById('nav-' + name).classList.add('active');
-    window.scrollTo(0, 0);
+/* ═══════════════════════════════════════════════════════
+   TRANSLATIONS
+═══════════════════════════════════════════════════════ */
+const translations = {
+  en: {
+    nav: { home: 'Home', research: 'Research', resume: 'Résumé', art: 'Art & Crafts' },
+    hero: { role: 'Postdoctoral Researcher · Astrophysics' },
+    about: {
+      label: 'About',
+      p1: 'I am a PhD in astrophysics with a main interest in galaxy cluster cosmology, galaxy evolution, and Euclid photometry.',
+      p2: 'Currently working as a postdoctoral researcher for the Euclid collaboration at the Ludwig-Maximilians-Universität München, München. My work is mainly focused on validating Euclid data and photometry, with a side interest in cosmology and galaxy evolution in extreme environments. When not doing science, I paint and do handicrafts.'
+    },
+    research: { header: 'Research & Projects', subtitle: 'A selection of projects I have worked on.' },
+    p1: {
+      title: 'PhD thesis: From galaxy clusters to cosmology',
+      desc: 'This is the work I did for my PhD thesis. It ranges from a detailed study of a single galaxy cluster, how to create a cluster catalog, and finally, how to use galaxy clusters to predict cosmology.',
+      link: 'LMU archive →'
+    },
+    p2: {
+      title: 'The PSZ-MCMF catalogue of Planck clusters over the DES region',
+      desc: 'I extended the number of galaxy clusters confirmed with Planck by going down to S/N of 3. For this, my collaborators created a catalog of cluster candidates within the DES area and I then modified/run the MCMF cluster confirmation algorithm to find the best optical counterparts of each candidate. The results yielded a cluster sample with 90% purity and 3 times as many clusters as previously reported.',
+      link: 'arXiv →'
+    },
+    p3: {
+      title: 'Clash of Titans: A MUSE dynamical study of the extreme cluster merger SPT-CL J0307-6225',
+      desc: 'In this work, I focus on the analysis of the merging galaxy cluster SPT-CL J0307-6225. Through an analysis of its merging dynamics, I separated the substructures and find a likely mass ratio of ~1.3. On the other hand, the analysis of the galaxy population suggests a previous merger within one of the substructures.',
+      link: 'arXiv →'
+    },
+    resume: { header: 'Résumé', subtitle: 'Academic background and full CV.' },
+    edu: { title: 'Education', d1: 'PhD in Astrophysics', d2: "Master's in Astrophysics", d3: "Bachelor's in Physics" },
+    pos: { title: 'Positions', t1: 'Postdoctoral Researcher', t2: 'Postdoctoral Researcher', t3: 'Postdoctoral Researcher', t4: 'Research assistant', t5: 'Research assistant' },
+    cv: { label: 'Full CV', download: 'Download CV (PDF)', updated: 'Last updated: April 2026' },
+    art: {
+      header: 'Art & Crafts',
+      subtitle: 'Paintings, amigurumis, and other works.',
+      intro: "I like doing handicrafts and paintings. Here is a selection of some of the creations I've made (mostly following tutorials)."
+    },
+    footer: { email: 'Email' }
+  },
+
+  es: {
+    nav: { home: 'Inicio', research: 'Investigación', resume: 'Currículum', art: 'Arte & Manualidades' },
+    hero: { role: 'Investigador Postdoctoral · Astrofísica' },
+    about: {
+      label: 'Sobre mí',
+      p1: 'Soy Doctor en Astrofísica con especial interés en cosmología de cúmulos de galaxias, evolución galáctica y fotometría de Euclid.',
+      p2: 'Actualmente trabajo como investigador postdoctoral para la colaboración Euclid en la Ludwig-Maximilians-Universität München. Mi trabajo se centra principalmente en la validación de datos y fotometría de Euclid, con un interés adicional en cosmología y evolución galáctica en entornos extremos. Cuando no hago ciencia, pinto y hago manualidades.'
+    },
+    research: { header: 'Investigación & Proyectos', subtitle: 'Una selección de proyectos en los que he trabajado.' },
+    p1: {
+      title: 'Tesis doctoral: De los cúmulos de galaxias a la cosmología',
+      desc: 'Este es el trabajo que realicé para mi tesis doctoral. Abarca desde el estudio detallado de un único cúmulo de galaxias y la creación de un catálogo de cúmulos, hasta el uso de cúmulos de galaxias para predecir parámetros cosmológicos.',
+      link: 'Archivo LMU →'
+    },
+    p2: {
+      title: 'El catálogo PSZ-MCMF de cúmulos de Planck en la región DES',
+      desc: 'Extendí el número de cúmulos de galaxias confirmados con Planck bajando hasta una relación señal-ruido de 3. Para ello, mis colaboradores crearon un catálogo de candidatos a cúmulos dentro del área DES, y yo modifiqué y ejecuté el algoritmo de confirmación MCMF para encontrar las mejores contrapartes ópticas de cada candidato. Los resultados produjeron una muestra con un 90% de pureza y tres veces más cúmulos que los reportados anteriormente.',
+      link: 'arXiv →'
+    },
+    p3: {
+      title: 'Choque de Titanes: Un estudio dinámico con MUSE de la fusión de cúmulos SPT-CL J0307-6225',
+      desc: 'En este trabajo me centro en el análisis del cúmulo de galaxias en fusión SPT-CL J0307-6225. A través del análisis de su dinámica de fusión, separé las subestructuras y encontré una razón de masa probable de ~1,3. Además, el análisis de la población galáctica sugiere una fusión previa dentro de una de las subestructuras.',
+      link: 'arXiv →'
+    },
+    resume: { header: 'Currículum', subtitle: 'Trayectoria académica y CV completo.' },
+    edu: { title: 'Formación académica', d1: 'Doctorado en Astrofísica', d2: 'Máster en Astrofísica', d3: 'Licenciatura en Física' },
+    pos: { title: 'Posiciones', t1: 'Investigador Postdoctoral', t2: 'Investigador Postdoctoral', t3: 'Investigador Postdoctoral', t4: 'Asistente de investigación', t5: 'Asistente de investigación' },
+    cv: { label: 'CV Completo', download: 'Descargar CV (PDF)', updated: 'Última actualización: abril de 2026' },
+    art: {
+      header: 'Arte & Manualidades',
+      subtitle: 'Pinturas, amigurumis y otras obras.',
+      intro: 'Me gusta hacer manualidades y pinturas. Aquí hay una selección de algunas de las creaciones que he hecho (principalmente siguiendo tutoriales).'
+    },
+    footer: { email: 'Correo' }
+  },
+
+  de: {
+    nav: { home: 'Start', research: 'Forschung', resume: 'Lebenslauf', art: 'Kunst & Handwerk' },
+    hero: { role: 'Postdoktorand · Astrophysik' },
+    about: {
+      label: 'Über mich',
+      p1: 'Ich bin Doktor der Astrophysik mit Schwerpunkt in Galaxienhaufen-Kosmologie, Galaxienevolution und Euclid-Photometrie.',
+      p2: 'Zurzeit arbeite ich als Postdoktorand für die Euclid-Kollaboration an der Ludwig-Maximilians-Universität München. Meine Arbeit konzentriert sich hauptsächlich auf die Validierung von Euclid-Daten und -Photometrie, mit einem Nebeninteresse an Kosmologie und Galaxienevolution in extremen Umgebungen. Wenn ich nicht forsche, male ich und mache Handarbeiten.'
+    },
+    research: { header: 'Forschung & Projekte', subtitle: 'Eine Auswahl der Projekte, an denen ich gearbeitet habe.' },
+    p1: {
+      title: 'Doktorarbeit: Von Galaxienhaufen zur Kosmologie',
+      desc: 'Dies ist die Arbeit meiner Doktorarbeit. Sie reicht von der detaillierten Studie eines einzelnen Galaxienhaufens und der Erstellung eines Haufenkatalogs bis hin zur Nutzung von Galaxienhaufen zur Vorhersage kosmologischer Parameter.',
+      link: 'LMU-Archiv →'
+    },
+    p2: {
+      title: 'Der PSZ-MCMF-Katalog der Planck-Galaxienhaufen im DES-Gebiet',
+      desc: 'Ich erweiterte die Anzahl der mit Planck bestätigten Galaxienhaufen, indem ich bis zu einem Signal-Rausch-Verhältnis von 3 herunterging. Meine Mitarbeiter erstellten dafür einen Katalog von Haufenkandidaten im DES-Gebiet, und ich modifizierte und führte den MCMF-Bestätigungsalgorithmus aus. Die Ergebnisse lieferten eine Stichprobe mit 90 % Reinheit und dreimal so vielen Haufen wie zuvor bekannt.',
+      link: 'arXiv →'
+    },
+    p3: {
+      title: 'Kampf der Titanen: Eine MUSE-Dynamikstudie der Galaxienhaufen-Fusion SPT-CL J0307-6225',
+      desc: 'In dieser Arbeit analysiere ich den verschmelzenden Galaxienhaufen SPT-CL J0307-6225. Durch eine Analyse der Fusionsdynamik trennte ich die Substrukturen und fand ein Massenverhältnis von ~1,3. Die Analyse der Galaxienpopulation deutet zudem auf eine frühere Fusion innerhalb einer der Substrukturen hin.',
+      link: 'arXiv →'
+    },
+    resume: { header: 'Lebenslauf', subtitle: 'Akademischer Werdegang und vollständiger Lebenslauf.' },
+    edu: { title: 'Ausbildung', d1: 'Promotion in Astrophysik', d2: 'Master in Astrophysik', d3: 'Bachelor in Physik' },
+    pos: { title: 'Stellen', t1: 'Postdoktorand', t2: 'Postdoktorand', t3: 'Postdoktorand', t4: 'Wissenschaftliche Hilfskraft', t5: 'Wissenschaftliche Hilfskraft' },
+    cv: { label: 'Vollständiger Lebenslauf', download: 'Lebenslauf herunterladen (PDF)', updated: 'Zuletzt aktualisiert: April 2026' },
+    art: {
+      header: 'Kunst & Handwerk',
+      subtitle: 'Gemälde, Amigurumis und andere Werke.',
+      intro: 'Ich mache gerne Handarbeiten und male. Hier ist eine Auswahl einiger meiner Werke, die ich (größtenteils nach Anleitungen) erstellt habe.'
+    },
+    footer: { email: 'E-Mail' }
   }
+};
 
-  /* ── Carousel ── */
-  /*
-  let current = 0;
-  const slides = document.querySelectorAll('.carousel-slide');
-  const dotsEl = document.getElementById('dots');
+/* ═══════════════════════════════════════════════════════
+   i18n
+═══════════════════════════════════════════════════════ */
+let currentLang = 'en';
 
-  slides.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goTo(i);
-    dotsEl.appendChild(d);
+function t(key) {
+  const parts = key.split('.');
+  let val = translations[currentLang];
+  for (const p of parts) { if (val == null) break; val = val[p]; }
+  if (val == null) {
+    val = translations.en;
+    for (const p of parts) { if (val == null) break; val = val[p]; }
+  }
+  return val != null ? String(val) : key;
+}
+
+function setLanguage(lang) {
+  if (!translations[lang]) lang = 'en';
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const text = t(key);
+    el.innerHTML = text;
   });
 
-  function goTo(n) {
-    slides[current].classList.remove('active');
-    document.querySelectorAll('.dot')[current].classList.remove('active');
-    current = (n + slides.length) % slides.length;
-    slides[current].classList.add('active');
-    document.querySelectorAll('.dot')[current].classList.add('active');
-  }
-
-  function moveCarousel(dir) { goTo(current + dir); }
-
-  // Auto-advance every 4 seconds
-  setInterval(() => moveCarousel(1), 4000);
-  */
-    
-  let current = 0;
-  let autoAdvance = setInterval(() => moveCarousel(1), 4000);
-  const slides = document.querySelectorAll('.carousel-slide');
-  const dotsEl = document.getElementById('dots');
-  
-  // Make sure only first slide is active on load
-  slides.forEach((s, i) => s.classList.toggle('active', i === 0));
-  
-  slides.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goTo(i);
-    dotsEl.appendChild(d);
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
   });
-  
-  function goTo(n) {
-    slides[current].classList.remove('active');
-    document.querySelectorAll('.dot')[current].classList.remove('active');
-    current = (n + slides.length) % slides.length;
-    slides[current].classList.add('active');
-    document.querySelectorAll('.dot')[current].classList.add('active');
-  }
-  
-  function moveCarousel(dir) {
-    clearInterval(autoAdvance);
-    goTo(current + dir);
-    autoAdvance = setInterval(() => moveCarousel(1), 4000);
-  }
+}
 
-  /* ── Lightbox with navigation ── */
-  let lightboxItems = [];
-  let lightboxIndex = 0;
-  let lightboxMode = 'art'; // 'art' or 'plot'
-  
-  function buildLightboxItems() {
-    lightboxItems = Array.from(document.querySelectorAll('.art-item img')).map(img => ({
-      src: img.src,
-      caption: img.closest('.art-item').querySelector('.art-caption')?.textContent || ''
-    }));
+/* ═══════════════════════════════════════════════════════
+   DARK MODE
+═══════════════════════════════════════════════════════ */
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+
+/* ═══════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════ */
+function navTo(target) {
+  showMain();
+  if (target === 'top') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    const el = document.getElementById(target);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   }
-  
-  function openLightbox(src, caption) {
-    const filename = src.split('/').pop();
-    const idx = lightboxItems.findIndex(item => item.src.split('/').pop() === filename);
-  
-    if (idx !== -1) {
-      // Art item — enable navigation
-      lightboxMode = 'art';
-      lightboxIndex = idx;
-      showLightboxItem(lightboxIndex);
-      document.querySelectorAll('.lightbox-arrow').forEach(a => a.style.display = 'flex');
+}
+
+function showArt() {
+  document.body.classList.add('art-mode');
+  window.scrollTo(0, 0);
+  setActiveNav('nav-art');
+}
+
+function showMain() {
+  document.body.classList.remove('art-mode');
+}
+
+function setActiveNav(navId) {
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById(navId);
+  if (el) el.classList.add('active');
+}
+
+/* Scroll spy */
+let _scrollRAF = null;
+function updateActiveNav() {
+  if (_scrollRAF) return;
+  _scrollRAF = requestAnimationFrame(() => {
+    _scrollRAF = null;
+    if (document.body.classList.contains('art-mode')) return;
+    const scrollY = window.scrollY + 80;
+    let active = 'nav-home';
+    const research = document.getElementById('section-research');
+    const resume   = document.getElementById('section-resume');
+    if (research && scrollY >= research.offsetTop) active = 'nav-research';
+    if (resume   && scrollY >= resume.offsetTop)   active = 'nav-resume';
+    setActiveNav(active);
+  });
+}
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+/* ═══════════════════════════════════════════════════════
+   CAROUSEL
+═══════════════════════════════════════════════════════ */
+let current = 0;
+const slides = document.querySelectorAll('.carousel-slide');
+const dotsEl = document.getElementById('dots');
+
+slides.forEach((s, i) => s.classList.toggle('active', i === 0));
+
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  document.querySelectorAll('.dot')[current].classList.remove('active');
+  current = (n + slides.length) % slides.length;
+  slides[current].classList.add('active');
+  document.querySelectorAll('.dot')[current].classList.add('active');
+}
+
+function moveCarousel(dir) { goTo(current + dir); }
+
+setInterval(() => goTo(current + 1), 4000);
+
+/* ═══════════════════════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════════════════════ */
+let lightboxItems = [];
+let lightboxPlots = [];
+let lightboxIndex = 0;
+let lightboxMode = 'art';
+
+function buildLightboxItems() {
+  lightboxItems = Array.from(document.querySelectorAll('.art-item img')).map(img => ({
+    src: img.src,
+    caption: img.closest('.art-item').querySelector('.art-caption')?.textContent || ''
+  }));
+}
+
+function openLightbox(src, caption, el) {
+  const filename = src.split('/').pop();
+  const artIdx = lightboxItems.findIndex(item => item.src.split('/').pop() === filename);
+
+  if (artIdx !== -1) {
+    // Art gallery — navigate all art items
+    lightboxMode = 'art';
+    lightboxIndex = artIdx;
+    showLightboxItem(lightboxIndex);
+    document.querySelectorAll('.lightbox-arrow').forEach(a => a.style.display = 'flex');
+  } else {
+    // Research plot — navigate within the same project's .project-plots group
+    const group = el && el.closest('.project-plots');
+    if (group) {
+      lightboxPlots = Array.from(group.querySelectorAll('.plot-item')).map(item => ({
+        src: item.querySelector('img').src,
+        caption: item.querySelector('.plot-caption')?.textContent || ''
+      }));
+      lightboxMode = 'plots';
+      lightboxIndex = lightboxPlots.findIndex(p => p.src.split('/').pop() === filename);
+      if (lightboxIndex === -1) lightboxIndex = 0;
+      showPlotItem(lightboxIndex);
+      const multi = lightboxPlots.length > 1;
+      document.querySelectorAll('.lightbox-arrow').forEach(a => a.style.display = multi ? 'flex' : 'none');
     } else {
-      // Plot item — no navigation, show caption passed directly
-      lightboxMode = 'plot';
+      lightboxMode = 'single';
       document.getElementById('lightbox-img').src = src;
       document.getElementById('lightbox-caption').textContent = caption || '';
       document.querySelectorAll('.lightbox-arrow').forEach(a => a.style.display = 'none');
     }
-    document.getElementById('lightbox').classList.add('open');
   }
-  
-  function showLightboxItem(i) {
-    document.getElementById('lightbox-img').src = lightboxItems[i].src;
-    document.getElementById('lightbox-caption').textContent = lightboxItems[i].caption;
-  }
-  
-  function lightboxNav(dir) {
-    if (lightboxMode !== 'art') return;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function showLightboxItem(i) {
+  document.getElementById('lightbox-img').src = lightboxItems[i].src;
+  document.getElementById('lightbox-caption').textContent = lightboxItems[i].caption;
+}
+
+function showPlotItem(i) {
+  document.getElementById('lightbox-img').src = lightboxPlots[i].src;
+  document.getElementById('lightbox-caption').textContent = lightboxPlots[i].caption;
+}
+
+function lightboxNav(dir) {
+  if (lightboxMode === 'art') {
     lightboxIndex = (lightboxIndex + lightboxItems.length + dir) % lightboxItems.length;
     showLightboxItem(lightboxIndex);
+  } else if (lightboxMode === 'plots') {
+    lightboxIndex = (lightboxIndex + lightboxPlots.length + dir) % lightboxPlots.length;
+    showPlotItem(lightboxIndex);
   }
-  
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
-  }
-  
-  document.addEventListener('keydown', e => {
-    if (!document.getElementById('lightbox').classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') lightboxNav(-1);
-    if (e.key === 'ArrowRight') lightboxNav(1);
-  });
-  
-  // Click backdrop to close
-  document.getElementById('lightbox').addEventListener('click', function(e) {
-    if (e.target === this) closeLightbox();
-  });
-  
-  // Swipe support for mobile
-  (function() {
-    let startX = 0;
-    const lb = document.getElementById('lightbox');
-    lb.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-    lb.addEventListener('touchend', e => {
-      const diff = startX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 50) lightboxNav(diff > 0 ? 1 : -1);
-    }, { passive: true });
-  })();
-  
-  document.addEventListener('DOMContentLoaded', buildLightboxItems);
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lightboxNav(-1);
+  if (e.key === 'ArrowRight') lightboxNav(1);
+});
+
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+
+(function() {
+  let startX = 0;
+  const lb = document.getElementById('lightbox');
+  lb.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) lightboxNav(diff > 0 ? 1 : -1);
+  }, { passive: true });
+})();
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+initTheme();
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildLightboxItems();
+
+  const savedLang = localStorage.getItem('lang');
+  const browserLang = (navigator.language || 'en').slice(0, 2).toLowerCase();
+  const initLang = savedLang || (['en', 'es', 'de'].includes(browserLang) ? browserLang : 'en');
+  setLanguage(initLang);
+});
 </script>
 </body>
 </html>
